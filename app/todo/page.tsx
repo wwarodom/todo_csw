@@ -10,6 +10,7 @@ export default function Todo() {
         { id: 3, name: "Writing code", time: 2 },
     ]);
 
+    const [editId, setEditId] = useState(0);
     const [name, setName] = useState('');
     const [time, setTime] = useState(0);
 
@@ -23,8 +24,17 @@ export default function Todo() {
     function editTodos(id: number) { 
         const editId = todos.findIndex( (item) => ( +item.id === id )   )
         console.log("Edit id: ", editId);
+        setEditId(editId);
         setName(todos[editId].name);
         setTime(todos[editId].time);
+    }
+
+    function updateTodo( ) {
+        const tmpTodos = todos;
+        tmpTodos[editId].name = name;
+        tmpTodos[editId].time = time;
+        setTodos([...tmpTodos]);
+        console.log(todos);
     }
 
     function deleteTodos(id: number) {
@@ -96,7 +106,7 @@ export default function Todo() {
                             className="w-72 h-8 p-2"
                             type="text"
                             onChange={(e) => setName(e.target.value)}
-                            defaultValue={name}
+                            value={name}
                         />
                     </div>
                 </div>
@@ -106,16 +116,16 @@ export default function Todo() {
                         <input className="w-72 h-8 p-2"
                             type="number"
                             onChange={(e) => setTime(+e.target.value)}
-                            defaultValue={time}
+                            value={time}
                         />
                     </div>
                 </div>
                 <div>
                     <button
                         className="border-2 border-black mt-4 p-2 rounded-lg text-xl"
-                        onClick={addTodo}
+                        onClick={updateTodo}
                     >
-                        Edit
+                        Update
                     </button>
                 </div>
             </section>
