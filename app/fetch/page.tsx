@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react"
+import {  useState } from "react"
 
 export default function Todo() {
 
@@ -8,6 +8,15 @@ export default function Todo() {
     const [id, setId] = useState(0);
     const [userId, setUserId] = useState(0);
     const [completed, setCompleted] = useState(false);
+
+    type TodoType = {
+        completed: boolean;
+        id: number;
+        title: string;
+        userId: number;
+    }
+
+    const [todos, setTodos] = useState<[TodoType]>();
 
     function fetchTodo() {
         fetch(`https://jsonplaceholder.typicode.com/todos/${id}` )
@@ -21,7 +30,16 @@ export default function Todo() {
                 setUserId(userId); 
             });  
     }
- 
+
+    function fetchAllTodo() {
+        fetch(`https://jsonplaceholder.typicode.com/todos/` )
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json); 
+                setTodos(json);
+            });  
+    }
+
 
     return (
         <>
@@ -45,6 +63,35 @@ export default function Todo() {
                 className="p-2 border-black border-2"
                 onClick={fetchTodo}
                 >Fetch</button>
+
+            <button 
+                className="p-2 border-black border-2"
+                onClick={fetchAllTodo}
+                >Fetch All </button>
+            <button 
+                className="p-2 border-black border-2"
+                onClick={() => setTodos([])}
+                > Reset </button>
+            <hr />
+            <div> 
+                <ul>
+                    { 
+                        todos?.map( (item, index) => 
+                            <li key={index}>{index+1}: 
+                                {item.title} : {item.id}
+                                <div>  
+                                    {(completed)?(
+                                    <input type="checkbox" name="complete" value="complete"  checked="checked" /> 
+                                    ):(
+                                    <input type="checkbox" name="complete" value="complete"  checked=""  />   
+                                    )}
+                                    <label htmlFor="complete"> complete </label>              
+                                </div>
+                            </li>
+                        ) 
+                    }
+                </ul>
+            </div>
         </>
     )
 }
